@@ -5,9 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>FAIDR — IDR feature signature</title>
 <style>
-  html {
-    scrollbar-gutter: stable;
-  }
+  html { scrollbar-gutter: stable; }
+  body { min-height: 101vh; }
   /* Palette from the dataviz reference, validated on both surfaces.
      Diverging poles: enriched = red (--pos), depleted = blue (--neg). */
   :root {
@@ -899,6 +898,8 @@ function renderBars(container, items) {
     </g>`;
   }).join("");
 
+  container.style.minHeight = `${container.offsetHeight}px`;
+
   container.innerHTML = `<svg viewBox="0 0 ${width} ${height}" width="100%" height="${height}" role="img"
       aria-label="Feature strength, signed Wald z">
     <line class="axis" x1="${zeroX}" x2="${zeroX}" y1="2" y2="${height - 6}"/>
@@ -1028,7 +1029,8 @@ function startApp(proteome, go, root = document) {
   }
 
   function renderAt(idx) {
-    if (!counts.length) return;
+    document.body.style.minHeight = `${document.documentElement.scrollHeight}px`;
+
     idx = Math.max(0, Math.min(counts.length - 1, Math.round(idx)));
     slider.value = String(idx);
 
@@ -1050,6 +1052,8 @@ function startApp(proteome, go, root = document) {
       .map((j, k) => ({ feature: labels[j], raw: X.features[j], desc: descs[j], value: waldZ[k] }))
       .sort((a, b) => b.value - a.value);                    // display enriched → depleted
     renderBars(chart, items);
+
+    document.body.style.minHeight = '';if (!counts.length) return;
   }
 
   // A hand-typed target count (Enter/blur on the readout) snaps to whichever
